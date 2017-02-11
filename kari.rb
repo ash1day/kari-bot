@@ -47,32 +47,38 @@ def get_kariudo_names_in_game(game, kariudos)
 end
 
 # DiscordにPostする文章を返す
-def build_message(recent_games, kariudos)
-  messages = []
-  template = '**%{kariudo_names_in_game}** が%{result}。詳細: http://jp.op.gg/summoner/userName=%{kariudo_name}'
+def build_embeds(recent_games, kariudos)
+  embeds = []
+  title_template = '**%{kariudo_names_in_game}** が%{result}。'
+  desc_template = 'http://jp.op.gg/summoner/userName=%{kariudo_name}'
 
   recent_games.reverse.each do |recent_game|
     kariudo_names_in_game_arr = get_kariudo_names_in_game(recent_game, kariudos)
 
-    options = {
+    title_params = {
       kariudo_names_in_game: kariudo_names_in_game_arr.join(', '),
-      result: recent_game.stats.win ? '狩りました' : '狩られました',
-      kariudo_name: kariudo_names_in_game_arr.sample
+      result: recent_game.stats.win ? '狩りました' : '狩られました'
     }
 
-    message = format(template, options)
-    messages.push(message)
+    desc_params = { kariudo_name: kariudo_names_in_game_arr.sample }
+
+    embed = {
+      title: format(title_template, title_params),
+      description: format(desc_template, desc_params),
+      color: recent_game.stats.win ? 3447003 : 15158332
+    }
+    embeds.push(embed)
   end
 
-  messages
+  embeds
 end
 
-def execute_discord_webhook(messages)
+def execute_discord_webhook(embeds)
   uri = URI.parse(KARIBOT_WEBHOOK_URI)
   https = Net::HTTP.new(uri.host, uri.port)
   https.use_ssl = true
   req = Net::HTTP::Post.new(uri.path, 'Content-Type' => 'application/json')
-  req.body = { content: messages.join("\n") }.to_json
+  req.body = { embeds: embeds }.to_json
   res = https.request(req)
   puts "Response #{res.code} #{res.message}: #{res.body}"
 end
@@ -87,5 +93,5 @@ if recent_games.empty?
   exit
 end
 
-messages = build_message(recent_games, kariudos)
-execute_discord_webhook(messages)
+embeds = build_embeds(recent_games, kariudos)
+execute_discord_webhook(embeds)
