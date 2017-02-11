@@ -43,7 +43,7 @@ def get_kariudo_names_in_game(game, kariudos)
     end
   end
 
-  kariudo_names_in_game_arr
+  kariudo_names_in_game_arr.shuffle
 end
 
 # DiscordにPostする文章を返す
