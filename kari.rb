@@ -49,7 +49,7 @@ end
 # DiscordにPostする文章を返す
 def build_embeds(recent_games, kariudos)
   embeds = []
-  title_template = '**%{kariudo_names_in_game}** が%{result}。'
+  title_template = '%{kariudo_names_in_game} が%{result}。'
   desc_template = 'http://jp.op.gg/summoner/userName=%{kariudo_name}'
 
   recent_games.reverse.each do |recent_game|
