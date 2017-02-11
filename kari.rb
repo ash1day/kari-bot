@@ -31,32 +31,33 @@ def fetch_recent_games(kariudos)
   recent_games
 end
 
-def get_kariudos_in_game(game, kariudos)
-  kariudos_in_game_arr = [game.summoner_name]
+def get_kariudo_names_in_game(game, kariudos)
+  kariudo_names_in_game_arr = [game.summoner_name]
 
   # 同じ試合に他に狩人がいれば追加
-  return kariudos_in_game_arr if game.fellow_players.nil?
-  game.fellow_players.each do |player|
-    if (kariudo = kariudos.find { |k| k.id == player.summoner_id })
-      kariudos_in_game_arr.push(kariudo.name)
+  unless game.fellow_players.nil?
+    game.fellow_players.each do |player|
+      if (kariudo = kariudos.find { |k| k.id == player.summoner_id })
+        kariudo_names_in_game_arr.push(kariudo.name)
+      end
     end
   end
 
-  kariudos_in_game_arr = [game.summoner_name]
+  kariudo_names_in_game_arr
 end
 
 # DiscordにPostする文章を返す
 def build_message(recent_games, kariudos)
   messages = []
-  template = '**%{kariudos_in_game}** が%{result}。詳細: http://jp.op.gg/summoner/userName=%{kariudo_name}'
+  template = '**%{kariudo_names_in_game}** が%{result}。詳細: http://jp.op.gg/summoner/userName=%{kariudo_name}'
 
   recent_games.reverse.each do |recent_game|
-    kariudos_in_game_arr = get_kariudos_in_game(recent_game, kariudos)
+    kariudo_names_in_game_arr = get_kariudo_names_in_game(recent_game, kariudos)
 
     options = {
-      kariudos_in_game: kariudos_in_game_arr.join(', '),
+      kariudo_names_in_game: kariudo_names_in_game_arr.join(', '),
       result: recent_game.stats.win ? '狩りました' : '狩られました',
-      kariudo_name: kariudos_in_game_arr.sample
+      kariudo_name: kariudo_names_in_game_arr.sample
     }
 
     message = format(template, options)
