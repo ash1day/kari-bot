@@ -46,6 +46,9 @@ def get_kariudo_names_in_game(game, kariudos)
   kariudo_names_in_game_arr.shuffle
 end
 
+WIN_COLOR_INT  = 3447003
+LOSE_COLOR_INT = 15158332
+
 # DiscordにPostする文章を返す
 def build_embeds(recent_games, kariudos)
   embeds = []
@@ -65,7 +68,7 @@ def build_embeds(recent_games, kariudos)
     embed = {
       title: format(title_template, title_params),
       description: format(desc_template, desc_params),
-      color: recent_game.stats.win ? 3447003 : 15158332
+      color: recent_game.stats.win ? WIN_COLOR_INT : LOSE_COLOR_INT
     }
     embeds.push(embed)
   end
@@ -88,6 +91,8 @@ kariudos = fetch_kariudos
 
 # Lol::Gameクラスのインスタンスの配列
 recent_games = fetch_recent_games(kariudos)
+
+# 最近のゲームが無ければDiscordにPOSTせず終了
 if recent_games.empty?
   puts 'No recent games.'
   exit
