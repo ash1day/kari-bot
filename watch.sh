@@ -1,0 +1,1 @@
+nohup watch -n 60 ruby kari.rb > out.log 2> err.log < /dev/null &
