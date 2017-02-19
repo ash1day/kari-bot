@@ -21,7 +21,7 @@ def fetch_recent_games(kariudos)
 
   kariudos.each do |kariudo|
     client.game.recent(kariudo.id).each do |game|
-      next if GameLogger.logged?(game.game_id)
+      next if GameLogger.logged?(game.game_id) || game.game_type == 'CUSTOM_GAME'
 
       game.summoner_name = kariudo.name
       GameLogger.log(game.game_id)
