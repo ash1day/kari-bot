@@ -8,7 +8,7 @@ KARIBOT_WEBHOOK_URI = ENV['KARIBOT_WEBHOOK_URI']
 # 全狩人のKariudoクラスのインスタンスの配列を返す
 def fetch_kariudos
   kariudos = []
-  CSV.foreach('kariudos.csv', headers: true) do |row|
+  CSV.foreach('kariudos.csv', headers: true, encoding: 'utf-8') do |row|
     kariudos.push(Kariudo.new(row['id'].to_i, row['name']))
   end
   kariudos
