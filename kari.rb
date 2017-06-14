@@ -5,7 +5,7 @@
 RIOT_API_KEY = ENV['RIOT_API_KEY']
 KARIBOT_WEBHOOK_URI = ENV['KARIBOT_WEBHOOK_URI']
 
-exit unless RIOT_API_KEY.nil? || KARIBOT_WEBHOOK_URI.nil?
+exit if RIOT_API_KEY.nil? || KARIBOT_WEBHOOK_URI.nil?
 
 # 全狩人のKariudoクラスのインスタンスの配列を返す
 def fetch_kariudos
