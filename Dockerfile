@@ -9,4 +9,4 @@ RUN bundle install
 COPY . /app
 
 # 150秒に一回
-CMD ["watch", "-n", "150", "ruby", "kari.rb"]
+CMD ["watch", "-n", "60", "ruby", "kari.rb"]
